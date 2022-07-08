@@ -7,4 +7,4 @@ Bindings can be figured out from config.h file.
 Features
 --------
 
-This build can spawn scatchpads as well as bc in a scratchpad, swallow windows, make a window sticky, send a client to another tag while following and not following it, move items around the stack and be configured by xresources.
+This build can spawn scatchpads as well as bc in a scratchpad, swallow windows, make a window sticky, quickly switch to a sticky window, send a client to another tag while following and not following it, move items around the stack and be configured by xresources.
