@@ -22,13 +22,18 @@ static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
-static char selbordercolor[]        = "#770000";
+static char selbordercolor[]        = "#005577";
+static char floatbordercolor[]      = "#770000";
 static char selbgcolor[]            = "#005577";
-static char *colors[][3] = {
-       /*               fg           bg           border   */
-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+static char *colors[][4] = {
+       /*               fg           bg           border           floatborder         */
+       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor, normbordercolor  },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor,  floatbordercolor },
  };
+
+static const XPoint stickyicon[]    = { {0,0}, {4,0}, {4,8}, {2,6}, {0,8}, {0,0} }; /* represents the icon as an array of vertices */
+static const XPoint stickyiconbb    = {4,8};	/* defines the bottom right corner of the polygon's bounding box (speeds up scaling) */
+
 typedef struct {
 	const char *name;
 	const void *cmd;
@@ -143,12 +148,13 @@ static Key keys[] = {
 	/* modifier                     key			   function        argument */
 	STACKKEYS(MODKEY,                          focus)
 	STACKKEYS(MODKEY|ShiftMask,                push)
-	{ MODKEY,                       XK_d,			   spawn,          SHCMD("dmenu_run") },
+	{ MODKEY,                       XK_d,			   spawn,          SHCMD("dmenu_run -c -g 1 -l 5") },
+	{ MODKEY|ShiftMask,             XK_d,			   spawn,          SHCMD("passmenu") },
 	{ MODKEY,                       XK_w,			   spawn,          SHCMD("$BROWSER") },
 	{ MODKEY,                       XK_Return,		   spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,			   togglebar,      {0} },
-	{ MODKEY,                       XK_i,			   incnmaster,     {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_i,			   incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_c,			   incnmaster,     {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_c,			   incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,			   setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,			   setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_a,			   shiftview,      {.i = -1 } },
@@ -172,8 +178,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_p,			   setlayout,      {.v = &layouts[7]} }, // nrowgrid
 	{ MODKEY,                       XK_y,			   setlayout,      {.v = &layouts[8]} }, // horizgrid
 	{ MODKEY|ShiftMask,             XK_y,			   setlayout,      {.v = &layouts[9]} }, // gaplessgrid
-	{ MODKEY,                       XK_c,			   setlayout,      {.v = &layouts[10]} }, // centeredmaster
-	{ MODKEY|ShiftMask,             XK_c,			   setlayout,      {.v = &layouts[11]} }, // centeredfloatingmaster
+	{ MODKEY,                       XK_i,			   setlayout,      {.v = &layouts[10]} }, // centeredmaster
+	{ MODKEY|ShiftMask,             XK_i,			   setlayout,      {.v = &layouts[11]} }, // centeredfloatingmaster
 	{ MODKEY,                       XK_f,			   setlayout,      {.v = &layouts[12]} }, // floating
 	{ MODKEY|ShiftMask,             XK_f,			   togglefullscr,  {0} }, //actualfullscreen
 	{ MODKEY,                       XK_space,		   togglefloating, {0} }, //change selected window to floating mode
@@ -191,7 +197,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_r,			   spawn,         SHCMD(TERMINAL " -e tremc") },
 	{ MODKEY,                       XK_n,			   spawn,         SHCMD(TERMINAL " -e nvim -c VimwikiIndex") },
 	{ MODKEY|ShiftMask,             XK_n,			   spawn,         SHCMD(TERMINAL " -e newsboat") },
-	{ MODKEY|ShiftMask,   		XK_v,		           spawn,         SHCMD(TERMINAL " -e pulsemixer; pkill -RTMIN+10 dwmblocks") }, 
+	{ MODKEY,         		XK_v,		           spawn,         SHCMD(TERMINAL " -e pulsemixer; pkill -RTMIN+10 dwmblocks") }, 
 	{ 0,				XF86XK_MonBrightnessDown,  spawn,         SHCMD("xbacklight -dec 5; pkill -RTMIN+9 dwmblocks") },
 	{ 0,				XF86XK_MonBrightnessUp,    spawn,         SHCMD("xbacklight -inc 5; pkill -RTMIN+9 dwmblocks") },
 	{ 0,				XF86XK_AudioMute,          spawn,         SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
@@ -201,6 +207,8 @@ static Key keys[] = {
 	{ 0,				XF86XK_AudioPlay,          spawn,         SHCMD("mpc | grep -iq playing && mpc -q pause || mpc -q play") },
 	{ 0,				XF86XK_AudioNext,          spawn,         SHCMD("mpc next") },
 	{ 0,				XK_Print,                  spawn,         SHCMD("screenshots") },
+	{ 0,				XK_F1,                     spawn,         SHCMD("dmenumount") },
+	{ ShiftMask,			XK_F1,                     spawn,         SHCMD("dmenuumount") },
 	TAGKEYS(                        XK_1,					  0)
 	TAGKEYS(                        XK_2,					  1)
 	TAGKEYS(                        XK_3,					  2)
@@ -232,16 +240,14 @@ static Key keys[] = {
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
-#ifndef __OpenBSD__
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 1} },
-	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 2} },
-	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 3} },
-	{ ClkStatusText,        0,              Button1,        sigdwmblocks,   {.i = 4} },
-	{ ClkStatusText,        0,              Button2,        sigdwmblocks,   {.i = 5} },
-	{ ClkStatusText,        0,              Button3,        sigdwmblocks,   {.i = 6} },
-#endif
-	{ ClkStatusText,        ShiftMask,      Button3,        spawn,          SHCMD(TERMINAL "-e nvim ~/.config/dwmblocks/config.h") },
+	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
+	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
+	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
+	{ ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
+	{ ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5} },
+	{ ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 6} },
+	{ ClkStatusText,        ShiftMask,      Button3,        spawn,          SHCMD(TERMINAL "-e nvim ~/Downloads/dwmblocks/config.h") },
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
