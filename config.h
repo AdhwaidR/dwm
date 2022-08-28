@@ -189,8 +189,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period,		   focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,		   tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,		   tagmon,         {.i = +1 } },
-	{ MODKEY,            		XK_grave,		   togglescratch,  {.ui = 0 } },//normal scratchpad
-	{ MODKEY|ShiftMask,   		XK_grave,		   togglescratch,  {.ui = 1 } },//calculator scratchpad
+	{ MODKEY,            		XK_q,		   togglescratch,  {.ui = 0 } },//normal scratchpad
+	{ MODKEY|ShiftMask,   		XK_backspace,		   togglescratch,  {.ui = 1 } },//calculator scratchpad
 	{ MODKEY,                       XK_m,			   spawn,         SHCMD(TERMINAL " -e ncmpcpp") }, 
 	{ MODKEY,                       XK_e,			   spawn,         SHCMD(TERMINAL " -e neomutt") }, 
 	{ MODKEY,                       XK_r,			   spawn,         SHCMD(TERMINAL " -e lfub") },
@@ -198,8 +198,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_n,			   spawn,         SHCMD(TERMINAL " -e nvim -c VimwikiIndex") },
 	{ MODKEY|ShiftMask,             XK_n,			   spawn,         SHCMD(TERMINAL " -e newsboat") },
 	{ MODKEY,         		XK_v,		           spawn,         SHCMD(TERMINAL " -e pulsemixer; pkill -RTMIN+10 dwmblocks") }, 
-	{ 0,				XF86XK_MonBrightnessDown,  spawn,         SHCMD("xbacklight -dec 5; pkill -RTMIN+9 dwmblocks") },
-	{ 0,				XF86XK_MonBrightnessUp,    spawn,         SHCMD("xbacklight -inc 5; pkill -RTMIN+9 dwmblocks") },
+	{ 0,				XF86XK_MonBrightnessDown,  spawn,         SHCMD("xbacklight -dec 1; pkill -RTMIN+9 dwmblocks") },
+	{ 0,				XF86XK_MonBrightnessUp,    spawn,         SHCMD("xbacklight -inc 1; pkill -RTMIN+9 dwmblocks") },
 	{ 0,				XF86XK_AudioMute,          spawn,         SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
 	{ 0,				XF86XK_AudioLowerVolume,   spawn,         SHCMD("pamixer --allow-boost -d 1; pkill -RTMIN+10 dwmblocks") },
 	{ 0,				XF86XK_AudioRaiseVolume,   spawn,         SHCMD("pamixer --allow-boost -i 1; pkill -RTMIN+10 dwmblocks") },
@@ -208,7 +208,7 @@ static Key keys[] = {
 	{ 0,				XF86XK_AudioNext,          spawn,         SHCMD("mpc next") },
 	{ 0,				XK_Print,                  spawn,         SHCMD("screenshots") },
 	{ 0,				XK_F1,                     spawn,         SHCMD("dmenumount") },
-	{ ShiftMask,			XK_F1,                     spawn,         SHCMD("dmenuumount") },
+	{ 0,			        XK_F2,                     spawn,         SHCMD("dmenuumount") },
 	TAGKEYS(                        XK_1,					  0)
 	TAGKEYS(                        XK_2,					  1)
 	TAGKEYS(                        XK_3,					  2)
