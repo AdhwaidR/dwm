@@ -39,11 +39,13 @@ typedef struct {
 	const void *cmd;
 } Sp;
 const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
-const char *spcmd2[] = {"st", "-n", "spcalc", "-f", "monospace:size=16", "-g", "50x20", "-e", "bc", "-lq",  NULL };
+const char *spcmd2[] = {"st", "-n", "spcalc", "-f", "monospace:size=16", "-g", "50x20", "-e", "bc", "-lq", NULL };
+const char *spcmd3[] = {"st", "-n", "spnotes", "-g", "90x30", "-e", "notes", NULL };
 static Sp scratchpads[] = {
 	/* name          cmd  */
 	{"spterm",      spcmd1},
 	{"spcalc",      spcmd2},
+	{"spnotes",     spcmd3},
 };
 
 /* tagging */
@@ -61,6 +63,7 @@ static const Rule rules[] = {
 	{ "Firefox",  NULL,	  NULL,		1 << 8,	     0,		        0,		       -1,		  -1 },
 	{ NULL,	      "spterm",   NULL,		SPTAG(0),    1,			1,			0,		  -1 },
 	{ NULL,	      "spcalc",   NULL,		SPTAG(1),    1,			1,			0,		  -1 },
+	{ NULL,	      "spnotes",  NULL,		SPTAG(2),    1,			1,			0,		  -1 },
 	{ NULL,      NULL,       "Event Tester",  0,         0,                 0,                      1,                -1 }, /* xev */
 };
 
@@ -189,14 +192,14 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period,		   focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,		   tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,		   tagmon,         {.i = +1 } },
-	{ MODKEY,            		XK_q,		   togglescratch,  {.ui = 0 } },//normal scratchpad
-	{ MODKEY|ShiftMask,   		XK_backspace,		   togglescratch,  {.ui = 1 } },//calculator scratchpad
+	{ MODKEY,            		XK_q,		   	   togglescratch,  {.ui = 0 } },//normal scratchpad
+	{ MODKEY,	   		XK_BackSpace,		   togglescratch,  {.ui = 1 } },//calculator scratchpad
+	{ MODKEY,                       XK_n,			   togglescratch,  {.ui = 2 } },//notetaking scratchpad
 	{ MODKEY,                       XK_m,			   spawn,         SHCMD(TERMINAL " -e ncmpcpp") }, 
 	{ MODKEY,                       XK_e,			   spawn,         SHCMD(TERMINAL " -e neomutt") }, 
 	{ MODKEY,                       XK_r,			   spawn,         SHCMD(TERMINAL " -e lfub") },
 	{ MODKEY|ShiftMask,             XK_r,			   spawn,         SHCMD(TERMINAL " -e tremc") },
-	{ MODKEY,                       XK_n,			   spawn,         SHCMD(TERMINAL " -e nvim -c VimwikiIndex") },
-	{ MODKEY|ShiftMask,             XK_n,			   spawn,         SHCMD(TERMINAL " -e newsboat") },
+	{ MODKEY|ShiftMask,             XK_n,			   spawn,         {.v = (const char*[]) { TERMINAL, "-e", "nvim", "-c", "VimwikiIndex", NULL } } },
 	{ MODKEY,         		XK_v,		           spawn,         SHCMD(TERMINAL " -e pulsemixer; pkill -RTMIN+10 dwmblocks") }, 
 	{ 0,				XF86XK_MonBrightnessDown,  spawn,         SHCMD("xbacklight -dec 1; pkill -RTMIN+9 dwmblocks") },
 	{ 0,				XF86XK_MonBrightnessUp,    spawn,         SHCMD("xbacklight -inc 1; pkill -RTMIN+9 dwmblocks") },
