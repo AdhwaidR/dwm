@@ -11,7 +11,7 @@ static unsigned int snap      = 32;       /* snap pixel */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
 static int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
-static const char *fonts[]          = { "monospace:size=10", "JoyPixels:pixelsize=10:antialias=true:autohint=true" };
+static const char *fonts[]          = { "monospace:size=10", "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true" };
 static unsigned int gappih    = 20;       /* horiz inner gap between windows */
 static unsigned int gappiv    = 10;       /* vert inner gap between windows */
 static unsigned int gappoh    = 15;       /* horiz outer gap between windows and screen edge */
@@ -151,9 +151,6 @@ static Key keys[] = {
 	/* modifier                     key			   function        argument */
 	STACKKEYS(MODKEY,                          focus)
 	STACKKEYS(MODKEY|ShiftMask,                push)
-	{ MODKEY,                       XK_d,			   spawn,          SHCMD("dmenu_run -c -g 1 -l 5") },
-	{ MODKEY|ShiftMask,             XK_d,			   spawn,          SHCMD("passmenu") },
-	{ MODKEY,                       XK_w,			   spawn,          SHCMD("$BROWSER") },
 	{ MODKEY,                       XK_Return,		   spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,			   togglebar,      {0} },
 	{ MODKEY,                       XK_c,			   incnmaster,     {.i = +1 } },
@@ -192,15 +189,20 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period,		   focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,		   tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,		   tagmon,         {.i = +1 } },
-	{ MODKEY,            		XK_q,		   	   togglescratch,  {.ui = 0 } },//normal scratchpad
-	{ MODKEY,	   		XK_BackSpace,		   togglescratch,  {.ui = 1 } },//calculator scratchpad
+	{ MODKEY,            		XK_BackSpace,		   togglescratch,  {.ui = 0 } },//normal scratchpad
+	{ MODKEY|ShiftMask,	   	XK_BackSpace,		   togglescratch,  {.ui = 1 } },//calculator scratchpad
 	{ MODKEY,                       XK_n,			   togglescratch,  {.ui = 2 } },//notetaking scratchpad
+	{ MODKEY|ShiftMask,             XK_n,			   spawn,         {.v = (const char*[]) { TERMINAL, "-e", "nvim", "-c", "VimwikiIndex", NULL } } },
+	{ MODKEY,                       XK_d,			   spawn,          SHCMD("dmenu_run -c -g 1 -l 5") },
+	{ MODKEY|ShiftMask,             XK_d,			   spawn,          SHCMD("passmenu") },
+	{ MODKEY,                       XK_w,			   spawn,          SHCMD("$BROWSER") },
+	{ MODKEY|ShiftMask,             XK_w,			   spawn,          SHCMD("$BROWSER --private-window") },
 	{ MODKEY,                       XK_m,			   spawn,         SHCMD(TERMINAL " -e ncmpcpp") }, 
 	{ MODKEY,                       XK_e,			   spawn,         SHCMD(TERMINAL " -e neomutt") }, 
 	{ MODKEY,                       XK_r,			   spawn,         SHCMD(TERMINAL " -e lfub") },
 	{ MODKEY|ShiftMask,             XK_r,			   spawn,         SHCMD(TERMINAL " -e tremc") },
-	{ MODKEY|ShiftMask,             XK_n,			   spawn,         {.v = (const char*[]) { TERMINAL, "-e", "nvim", "-c", "VimwikiIndex", NULL } } },
 	{ MODKEY,         		XK_v,		           spawn,         SHCMD(TERMINAL " -e pulsemixer; pkill -RTMIN+10 dwmblocks") }, 
+	{ MODKEY|ShiftMask,   		XK_v,		           spawn,         SHCMD(TERMINAL " -e calcurse") }, 
 	{ 0,				XF86XK_MonBrightnessDown,  spawn,         SHCMD("xbacklight -dec 1; pkill -RTMIN+9 dwmblocks") },
 	{ 0,				XF86XK_MonBrightnessUp,    spawn,         SHCMD("xbacklight -inc 1; pkill -RTMIN+9 dwmblocks") },
 	{ 0,				XF86XK_AudioMute,          spawn,         SHCMD("pamixer -t; pkill -RTMIN+10 dwmblocks") },
@@ -222,6 +224,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,					  7)
 	TAGKEYS(                        XK_9,					  8)
 	{ MODKEY|ShiftMask,             XK_q,			   quit,          {0} },
+	{ MODKEY|ControlMask,           XK_q,			   quit,          {1} },
 };
 
 	/* { MODKEY|Mod1Mask,              XK_i,			   incrigaps,      {.i = +1 } }, */
