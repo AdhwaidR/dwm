@@ -2,6 +2,7 @@
 // Constants
 #define TERMINAL "st"
 #define TERMCLASS "St"
+#define SESSION_FILE "/tmp/dwm-session"
 #include <X11/XF86keysym.h>
 
 /* appearance */
@@ -212,6 +213,7 @@ static Key keys[] = {
 	{ 0,				XF86XK_AudioPlay,          spawn,         SHCMD("mpc | grep -iq playing && mpc -q pause || mpc -q play") },
 	{ 0,				XF86XK_AudioNext,          spawn,         SHCMD("mpc next") },
 	{ 0,				XK_Print,                  spawn,         SHCMD("screenshots") },
+	{ MODKEY,			XK_Insert,		   spawn,	  SHCMD("xdotool type $(grep -v '^#' ~/.local/share/bookmarks | dmenu -i -l 50 | cut -d' ' -f1)") },
 	{ 0,				XK_F1,                     spawn,         SHCMD("dmenumount") },
 	{ 0,			        XK_F2,                     spawn,         SHCMD("dmenuumount") },
 	TAGKEYS(                        XK_1,					  0)
