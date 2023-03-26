@@ -2,7 +2,6 @@
 // Constants
 #define TERMINAL "st"
 #define TERMCLASS "St"
-#define SESSION_FILE "/tmp/dwm-session"
 #include <X11/XF86keysym.h>
 
 /* appearance */
@@ -154,21 +153,26 @@ static Key keys[] = {
 	STACKKEYS(MODKEY|ShiftMask,                push)
 	{ MODKEY,                       XK_Return,		   spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,			   togglebar,      {0} },
+	{ MODKEY|ShiftMask,             XK_b,			   spawn,          {.v = (const char*[]) { "bookmarkthis", NULL } }},
 	{ MODKEY,                       XK_c,			   incnmaster,     {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_c,			   incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,			   setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,			   setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_a,			   shiftview,      {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_a,			   shifttag,       {.i = -1 } },
-	{ MODKEY,                       XK_g,		   	   shiftview,      {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_g,		           shifttag,       {.i = +1 } },
+	{ MODKEY,                       XK_s,		   	   shiftview,      {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_s,		           shifttag,       {.i = +1 } },
+	{ Mod1Mask,                     XK_bracketleft,		   shiftview,      {.i = -1 } },
+	{ Mod1Mask|ShiftMask,           XK_bracketleft,		   shiftview,      {.i = -1 } },
+	{ Mod1Mask,                     XK_bracketright,	   shiftview,      {.i = +1 } },
+	{ Mod1Mask|ShiftMask,           XK_bracketright,	   shiftview,      {.i = +1 } },
 	{ MODKEY|Mod1Mask,              XK_u,			   incrgaps,       {.i = +1 } },
 	{ MODKEY|Mod1Mask|ShiftMask,    XK_u,			   incrgaps,       {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_Return,		   zoom,           {0} },
 	{ MODKEY,                       XK_Tab,			   view,           {0} },
 	{ MODKEY,                       XK_x,			   killclient,     {0} },
-	{ MODKEY,                       XK_s,			   togglesticky,   {0} },
-	{ MODKEY|ShiftMask,             XK_s,			   focussticky,    {0} },
+	{ MODKEY,                       XK_g,			   togglesticky,   {0} },
+	{ MODKEY|ShiftMask,             XK_g,			   focussticky,    {0} },
 	{ MODKEY,                       XK_t,			   setlayout,      {.v = &layouts[0]} }, // Tile
 	{ MODKEY,                       XK_o,			   setlayout,      {.v = &layouts[1]} }, // Spiral
 	{ MODKEY|ShiftMask,             XK_o,			   setlayout,      {.v = &layouts[2]} }, // Dwindle
@@ -195,7 +199,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_n,			   togglescratch,  {.ui = 2 } },//notetaking scratchpad
 	{ MODKEY|ShiftMask,             XK_n,			   spawn,         {.v = (const char*[]) { TERMINAL, "-e", "nvim", "-c", "VimwikiIndex", NULL } } },
 	{ MODKEY,                       XK_d,			   spawn,          SHCMD("dmenu_run -c -g 1 -l 5") },
-	{ MODKEY|ShiftMask,             XK_d,			   spawn,          SHCMD("passmenu") },
+	{ MODKEY|ShiftMask,             XK_d,			   spawn,          SHCMD("passwordmenu") },
 	{ MODKEY,                       XK_w,			   spawn,          SHCMD("$BROWSER") },
 	{ MODKEY|ShiftMask,             XK_w,			   spawn,          SHCMD("$BROWSER --private-window") },
 	{ MODKEY,                       XK_m,			   spawn,         SHCMD(TERMINAL " -e ncmpcpp") }, 
@@ -255,7 +259,7 @@ static Button buttons[] = {
 	{ ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
 	{ ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5} },
 	{ ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 6} },
-	{ ClkStatusText,        ShiftMask,      Button3,        spawn,          SHCMD(TERMINAL "-e nvim ~/Downloads/dwmblocks/config.h") },
+	{ ClkStatusText,        ShiftMask,      Button3,        spawn,          SHCMD(TERMINAL "-e nvim ~/.local/src/dwmblocks/config.h") },
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
